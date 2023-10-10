@@ -22,6 +22,16 @@ pub struct EventCreationContext<'info> {
     #[account(mut)]
     pub token_mint: Account<'info, Mint>,
 
+    #[account(
+        init,
+        payer = authority,
+        seeds = [b"event-asset".as_ref(), _event_id.to_le_bytes().as_ref()], 
+        bump,
+        token::mint = token_mint,
+        token::authority = event_token_account,
+    )]
+    pub event_token_account: Box<Account<'info, TokenAccount>>,
+
 
     pub system_program: Program<'info, System>,
     pub token_program: Program<'info, Token>,
@@ -39,6 +49,7 @@ pub fn handler(ctx: Context<EventCreationContext>, _event_id: u64, _supply: u64,
     event_account.price = _price;
     event_account.token = token_mint.key();
     event_account.date = _date;
+    event_account.minted = 0;
     event_account.bump = *ctx.bumps.get("event_account").unwrap();
 
     Ok(())
