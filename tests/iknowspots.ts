@@ -222,6 +222,8 @@ escrowBalance = await program.provider.connection.getTokenAccountBalance(eventTo
 console.log("Escrow account balance before:", escrowBalance.value.uiAmount);
 ataBalance = await program.provider.connection.getTokenAccountBalance(usdcAta);
 console.log("ATA balance before:", ataBalance.value.uiAmount);
+let nftBalance = await program.provider.connection.getTokenAccountBalance(nftAta);
+console.log("ATA balance of nft:", nftBalance.value.uiAmount);
 
   });
 
