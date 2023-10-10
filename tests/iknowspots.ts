@@ -96,6 +96,10 @@ describe("iknowspots", () => {
         [Buffer.from("event-data"), new BN(event_id).toArrayLike(Buffer,"le",8)],
         program.programId
       );
+      let [eventTokenAccount, eventTokenAccountBumb] = await anchor.web3.PublicKey.findProgramAddress(
+        [Buffer.from("event-asset"), new BN(event_id).toArrayLike(Buffer,"le",8)],
+        program.programId
+      );
     const tx = await program.methods.eventCreation(
       new anchor.BN(event_id),
       new anchor.BN(price),
@@ -105,7 +109,8 @@ describe("iknowspots", () => {
       {
         authority : wallet.publicKey,
         eventAccount : eventAccount,
-        tokenMint : usdcKey.publicKey
+        tokenMint : usdcKey.publicKey,
+        eventTokenAccount : eventTokenAccount
       }
     ).rpc();
     console.log("Your transaction signature", tx);
