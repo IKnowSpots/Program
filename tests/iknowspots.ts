@@ -146,7 +146,8 @@ describe("iknowspots", () => {
         authority : wallet.publicKey,
         eventAccount : eventAccount,
         tokenMint : usdcKey.publicKey,
-        eventTokenAccount : eventTokenAccount
+        eventTokenAccount : eventTokenAccount,
+        tokenAtaSender : usdcAta
       }
     ).rpc();
     console.log("Your transaction signature", tx);
