@@ -91,7 +91,6 @@ describe("iknowspots", () => {
       let price = 10000000;
       let supply = 100;
       let date = 4348374;
-      const kpid = anchor.web3.Keypair.generate();
       let [eventAccount, eventAccountBumb] = await anchor.web3.PublicKey.findProgramAddress(
         [Buffer.from("event-data"), new BN(event_id).toArrayLike(Buffer,"le",8)],
         program.programId
@@ -120,5 +119,44 @@ describe("iknowspots", () => {
     console.log(eventData);
 
   });
+
+
+  it("Mint Spot", async () => {
+    // Add your test here.
+      let event_id = 1;
+      let price = 10000000;
+      let supply = 100;
+      let date = 4348374;
+      let [eventAccount, eventAccountBumb] = await anchor.web3.PublicKey.findProgramAddress(
+        [Buffer.from("event-data"), new BN(event_id).toArrayLike(Buffer,"le",8)],
+        program.programId
+      );
+      let [eventTokenAccount, eventTokenAccountBumb] = await anchor.web3.PublicKey.findProgramAddress(
+        [Buffer.from("event-asset"), new BN(event_id).toArrayLike(Buffer,"le",8)],
+        program.programId
+      );
+    const tx = await program.methods.mintSpot(
+      new anchor.BN(event_id),
+      eventTokenAccountBumb,
+      new anchor.BN(price),
+      new anchor.BN(supply),
+      new anchor.BN(date)
+      ).accounts(
+      {
+        authority : wallet.publicKey,
+        eventAccount : eventAccount,
+        tokenMint : usdcKey.publicKey,
+        eventTokenAccount : eventTokenAccount
+      }
+    ).rpc();
+    console.log("Your transaction signature", tx);
+
+    // Fetch the escrow account data
+    let eventData = await program.account.eventAccount.fetch(eventAccount);
+    console.log(eventData);
+
+  });
+
+
 
 });
