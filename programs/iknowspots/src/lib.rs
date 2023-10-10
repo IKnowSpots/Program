@@ -22,8 +22,8 @@ pub mod iknowspots {
         event_creation::handler(ctx, _event_id, _supply, _price, _date)
     }
 
-    pub fn mint_spot(ctx: Context<MintSpotContext>, _event_id: u64, _event_bump: u8, _supply: u64, _price:u64, _date: u64) -> Result<()> {
-        mint_spot::handler(ctx, _event_id, _event_bump,_supply, _price, _date)
+    pub fn mint_spot(ctx: Context<MintSpotContext>, _event_id: u64, _event_bump: u8, _mint_position: u64) -> Result<()> {
+        mint_spot::handler(ctx, _event_id, _event_bump,_mint_position)
     }
 
 

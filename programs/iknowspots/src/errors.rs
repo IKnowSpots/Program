@@ -21,4 +21,7 @@ pub enum ErrorCode {
 
     #[msg("Event already started.")]
     EventAlreadyStarted,
+
+    #[msg("Incorrect Nft Position")]
+    IncorrectNftPosition,
 }
