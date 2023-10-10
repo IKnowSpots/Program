@@ -18,8 +18,8 @@ pub mod iknowspots {
         initialize::handler(ctx)
     }
 
-    pub fn event_creation(ctx: Context<EventCreationContext>, _event_id: u64) -> Result<()> {
-        event_creation::handler(ctx, _event_id)
+    pub fn event_creation(ctx: Context<EventCreationContext>, _event_id: u64, _supply: u64, _price:u64, _date: u64) -> Result<()> {
+        event_creation::handler(ctx, _event_id, _supply, _price, _date)
     }
 
 }

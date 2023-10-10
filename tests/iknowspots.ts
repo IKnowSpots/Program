@@ -24,17 +24,24 @@ describe("iknowspots", () => {
   it("Is event created!", async () => {
     // Add your test here.
       let event_id = 1;
+      let price = 10000000;
+      let supply = 100;
+      let date = 4348374;
       const kpid = anchor.web3.Keypair.generate();
       let [eventAccount, eventAccountBumb] = await anchor.web3.PublicKey.findProgramAddress(
         [Buffer.from("event-data"), new BN(event_id).toArrayLike(Buffer,"le",8)],
         program.programId
       );
     const tx = await program.methods.eventCreation(
-      new anchor.BN(event_id)
+      new anchor.BN(event_id),
+      new anchor.BN(price),
+      new anchor.BN(supply),
+      new anchor.BN(date)
       ).accounts(
       {
         authority : wallet.publicKey,
-        eventAccount : eventAccount
+        eventAccount : eventAccount,
+        tokenMint : kpid.publicKey
       }
     ).rpc();
     console.log("Your transaction signature", tx);
