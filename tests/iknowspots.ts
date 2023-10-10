@@ -141,6 +141,47 @@ describe("iknowspots", () => {
         program.programId
       );
 
+    //   #[account(
+    //     init,
+    //     payer = authority,
+    //     seeds = [b"spot-nft".as_ref(),event_account.key().as_ref(),_mint_position.to_le_bytes().as_ref()], 
+    //     bump,
+    //     mint::decimals = 0,
+    //     mint::authority = event_account,
+    //     mint::freeze_authority = event_account
+    // )]
+    // pub spot_nft: Box<Account<'info, Mint>>,
+
+    // #[account(init, 
+    //     payer = authority, 
+    //     associated_token::mint = spot_nft, 
+    //     associated_token::authority = authority.to_account_info())
+    // ]
+    // pub receiver_spot_ata: Box<Account<'info, TokenAccount>>,
+        let _mint_position = 1;
+      let [spotNft, spotNftBumb] = await anchor.web3.PublicKey.findProgramAddress(
+        [Buffer.from("spot-nft"), eventAccount.toBuffer() ,new BN(_mint_position).toArrayLike(Buffer,"le",8)],
+        program.programId
+      );
+
+    //       // Determine the associated token account (ATA) owned by the provider's wallet
+    // usdcAta = await spl.getAssociatedTokenAddress(
+    //   usdcKey.publicKey,
+    //   provider.wallet.publicKey,
+    //   false,
+    //   spl.TOKEN_PROGRAM_ID,
+    //   spl.ASSOCIATED_TOKEN_PROGRAM_ID
+    // );
+
+
+      let nftAta = await spl.getAssociatedTokenAddress(
+        spotNft,
+          provider.wallet.publicKey,
+          false,
+          spl.TOKEN_PROGRAM_ID,
+          spl.ASSOCIATED_TOKEN_PROGRAM_ID
+        );
+
 
 
 // Check the escrow account balance
@@ -163,7 +204,9 @@ console.log("ATA balance before:", ataBalance.value.uiAmount);
         eventAccount : eventAccount,
         tokenMint : usdcKey.publicKey,
         eventTokenAccount : eventTokenAccount,
-        tokenAtaSender : usdcAta
+        tokenAtaSender : usdcAta,
+        spotNft : spotNft,
+        receiverSpotAta : nftAta
       }
     ).rpc();
     console.log("Your transaction signature", tx);
