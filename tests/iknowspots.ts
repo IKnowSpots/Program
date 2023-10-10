@@ -156,9 +156,7 @@ console.log("ATA balance before:", ataBalance.value.uiAmount);
     const tx = await program.methods.mintSpot(
       new anchor.BN(event_id),
       eventTokenAccountBumb,
-      new anchor.BN(price),
-      new anchor.BN(supply),
-      new anchor.BN(date)
+      new anchor.BN(1)
       ).accounts(
       {
         authority : wallet.publicKey,
