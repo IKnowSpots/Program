@@ -33,17 +33,6 @@ pub fn handler(ctx: Context<EventCreationContext>, _event_id: u64, _supply: u64,
     let authority_clone = ctx.accounts.authority.to_account_info().key();
     let token_mint = ctx.accounts.token_mint.to_account_info().key();
 
-    // pub event_id: u64,
-    // pub supply: u64,
-    // pub date: u64, //epoch timestamps
-    // pub price: u64, // in lamports
-    // pub event_manager: Pubkey,
-    // pub token: Pubkey,
-    // pub bump: u8, // for calculating pda
-
-    //* amount and supply */
-
-    // Initialize the escrow account fields
     event_account.event_id = _event_id;
     event_account.supply = _supply;
     event_account.event_manager = authority_clone.key();
