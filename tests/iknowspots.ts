@@ -122,6 +122,11 @@ describe("iknowspots", () => {
 
 
   it("Mint Spot", async () => {
+
+    // Before calling
+
+    
+
     // Add your test here.
       let event_id = 1;
       let price = 10000000;
@@ -135,6 +140,19 @@ describe("iknowspots", () => {
         [Buffer.from("event-asset"), new BN(event_id).toArrayLike(Buffer,"le",8)],
         program.programId
       );
+
+
+
+// Check the escrow account balance
+let escrowBalance = await program.provider.connection.getTokenAccountBalance(eventTokenAccount);
+console.log("Escrow account balance before:", escrowBalance.value.uiAmount);
+let ataBalance = await program.provider.connection.getTokenAccountBalance(usdcAta);
+console.log("ATA balance before:", ataBalance.value.uiAmount);
+
+
+
+
+
     const tx = await program.methods.mintSpot(
       new anchor.BN(event_id),
       eventTokenAccountBumb,
@@ -155,6 +173,14 @@ describe("iknowspots", () => {
     // Fetch the escrow account data
     let eventData = await program.account.eventAccount.fetch(eventAccount);
     console.log(eventData);
+
+
+    // Check the escrow account balance
+    console.log("--------------- Escrow account balance after -----------------");
+escrowBalance = await program.provider.connection.getTokenAccountBalance(eventTokenAccount);
+console.log("Escrow account balance before:", escrowBalance.value.uiAmount);
+ataBalance = await program.provider.connection.getTokenAccountBalance(usdcAta);
+console.log("ATA balance before:", ataBalance.value.uiAmount);
 
   });
 
