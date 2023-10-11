@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 use crate::state::*;
-use anchor_spl::token::{self, Mint, TokenAccount, Token, MintTo};
+use anchor_spl::token::{self, Mint, TokenAccount, Token, MintTo, Burn};
 use anchor_spl::associated_token::AssociatedToken;
 
 #[derive(Accounts)]
@@ -55,7 +55,7 @@ pub fn handler(ctx: Context<BurnSpotContext>, _event_id: u64, _event_bump: u8, _
 
 
     let event_account = &mut ctx.accounts.event_account;
-    let authority_clone = ctx.accounts.authority.to_account_info().key();
+    let authority_clone = ctx.accounts.authority.to_account_info();
     let token_mint = ctx.accounts.token_mint.to_account_info().key();
 
 
@@ -77,6 +77,30 @@ pub fn handler(ctx: Context<BurnSpotContext>, _event_id: u64, _event_bump: u8, _
     );
 
     anchor_spl::token::transfer(_cpi_ctx, event_account.price)?;
+
+
+    // --------------------------------
+
+    let cpi_accounts_burn = Burn {
+        mint: ctx.accounts.spot_nft.to_account_info(),
+        from: ctx.accounts.receiver_spot_ata.to_account_info(),
+        authority: authority_clone,
+    };
+    let cpi_program = ctx.accounts.token_program.to_account_info();
+    let cpi_ctx_burn = CpiContext::new_with_signer(cpi_program, cpi_accounts_burn
+        , outer.as_slice());
+    
+    // NFT will be minted to the receiver's address
+    anchor_spl::token::burn(cpi_ctx_burn, 1)?;
+
+
+
+
+
+
+
+
+
 
     // require!(event_account.minted.eq(&_mint_position), ErrorCode::IncorrectNftPosition);
 
