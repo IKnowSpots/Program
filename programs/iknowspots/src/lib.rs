@@ -26,6 +26,10 @@ pub mod iknowspots {
         mint_spot::handler(ctx, _event_id, _event_bump,_mint_position)
     }
 
+    pub fn burn_spot(ctx: Context<BurnSpotContext>, _event_id: u64, _event_bump: u8, _mint_position: u64, _spot_nft_bump: u8) -> Result<()> {
+        burn_spot::handler(ctx, _event_id, _event_bump,_mint_position, _spot_nft_bump)
+    }
+
 
 
 }

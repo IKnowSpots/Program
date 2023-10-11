@@ -227,6 +227,113 @@ console.log("ATA balance of nft:", nftBalance.value.uiAmount);
 
   });
 
+  it("Burn Spot", async () => {
+
+    // Before calling
+
+    
+
+    // Add your test here.
+      let event_id = 1;
+      let price = 10000000;
+      let supply = 100;
+      let date = 4348374;
+      let [eventAccount, eventAccountBumb] = await anchor.web3.PublicKey.findProgramAddress(
+        [Buffer.from("event-data"), new BN(event_id).toArrayLike(Buffer,"le",8)],
+        program.programId
+      );
+      let [eventTokenAccount, eventTokenAccountBumb] = await anchor.web3.PublicKey.findProgramAddress(
+        [Buffer.from("event-asset"), new BN(event_id).toArrayLike(Buffer,"le",8)],
+        program.programId
+      );
+
+    //   #[account(
+    //     init,
+    //     payer = authority,
+    //     seeds = [b"spot-nft".as_ref(),event_account.key().as_ref(),_mint_position.to_le_bytes().as_ref()], 
+    //     bump,
+    //     mint::decimals = 0,
+    //     mint::authority = event_account,
+    //     mint::freeze_authority = event_account
+    // )]
+    // pub spot_nft: Box<Account<'info, Mint>>,
+
+    // #[account(init, 
+    //     payer = authority, 
+    //     associated_token::mint = spot_nft, 
+    //     associated_token::authority = authority.to_account_info())
+    // ]
+    // pub receiver_spot_ata: Box<Account<'info, TokenAccount>>,
+        let _mint_position = 1;
+      let [spotNft, spotNftBumb] = await anchor.web3.PublicKey.findProgramAddress(
+        [Buffer.from("spot-nft"), eventAccount.toBuffer() ,new BN(_mint_position).toArrayLike(Buffer,"le",8)],
+        program.programId
+      );
+
+    //       // Determine the associated token account (ATA) owned by the provider's wallet
+    // usdcAta = await spl.getAssociatedTokenAddress(
+    //   usdcKey.publicKey,
+    //   provider.wallet.publicKey,
+    //   false,
+    //   spl.TOKEN_PROGRAM_ID,
+    //   spl.ASSOCIATED_TOKEN_PROGRAM_ID
+    // );
+
+
+      let nftAta = await spl.getAssociatedTokenAddress(
+        spotNft,
+          provider.wallet.publicKey,
+          false,
+          spl.TOKEN_PROGRAM_ID,
+          spl.ASSOCIATED_TOKEN_PROGRAM_ID
+        );
+
+
+
+// Check the escrow account balance
+let escrowBalance = await program.provider.connection.getTokenAccountBalance(eventTokenAccount);
+console.log("Escrow account balance before:", escrowBalance.value.uiAmount);
+let ataBalance = await program.provider.connection.getTokenAccountBalance(usdcAta);
+console.log("ATA balance before:", ataBalance.value.uiAmount);
+
+
+
+
+
+    const tx = await program.methods.burnSpot(
+      new anchor.BN(event_id),
+      eventTokenAccountBumb,
+      new anchor.BN(1),
+      spotNftBumb
+      ).accounts(
+      {
+        authority : wallet.publicKey,
+        eventAccount : eventAccount,
+        tokenMint : usdcKey.publicKey,
+        eventTokenAccount : eventTokenAccount,
+        tokenAtaSender : usdcAta,
+        spotNft : spotNft,
+        receiverSpotAta : nftAta
+      }
+    ).rpc();
+    console.log("Your transaction signature", tx);
+
+    // Fetch the escrow account data
+    let eventData = await program.account.eventAccount.fetch(eventAccount);
+    console.log(eventData);
+
+
+    // Check the escrow account balance
+    console.log("--------------- Escrow account balance after -----------------");
+escrowBalance = await program.provider.connection.getTokenAccountBalance(eventTokenAccount);
+console.log("Escrow account balance before:", escrowBalance.value.uiAmount);
+ataBalance = await program.provider.connection.getTokenAccountBalance(usdcAta);
+console.log("ATA balance before:", ataBalance.value.uiAmount);
+let nftBalance = await program.provider.connection.getTokenAccountBalance(nftAta);
+console.log("ATA balance of nft:", nftBalance.value.uiAmount);
+
+  });
+
 
 
 });
